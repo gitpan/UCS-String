@@ -1,0 +1,225 @@
+# Unicode-String
+perl Makefile.PL
+Checking if your kit is complete...
+Looks good
+Writing Makefile.mk for Unicode::String
+
+dmake -n dynamic -f Makefile.mk > mymake.out
+
+perl -I:::lib: :::lib:ExtUtils:xsubpp -noprototypes String.xs >xstmp.c && Rename -y xstmp.c :String.c
+
+Set SrcPPC "{SrcPPC} :String.c"
+
+MWCPPC -nosyspath -sym on -d MULTIPLICITY -i- -i : -i "::::sfio:"include: ∂
+-i "::::GUSI:"include: ∂
+-i "Tallinn:Metrowerks:CodeWarrior∂ MPW:Interfaces&Libraries:Interfaces:MWCIncludes:"  ∂
+-i ::: -i- -i : -w off -traceback -opt all -t -ext .PPC.o {SrcPPC} -o :Obj:
+
+Time to compile 'String.c': 19.00 seconds
+
+perl "-I:::lib:" -e 'use ExtUtils::Mksymlists; Mksymlists("NAME" => "Unicode::String", "DL_FUNCS" => {  }, "DL_VARS" => []);'
+MWLinkPPC -xm sharedlibrary -sym on -msg nodup -@export String.exp -name String ∂
+-o String.shlb.PPC :Obj:String.c.PPC.o "{MWPPCLibraries}MathLib" ∂
+:::PerlStub ∂
+"{MWPPCLibraries}InterfaceLib" ∂
+"{MWPPCLibraries}MSL RuntimePPC.Lib" ∂
+"{MWPPCLibraries}MSL C.PPC.Lib"
+
+Set SrcCFM68K "{SrcCFM68K} :String.c"
+
+MWC68K -nosyspath -sym on -d MULTIPLICITY -i- -i : -i "::::sfio:"include: ∂
+-i "::::GUSI:"include: ∂
+-i "Tallinn:Metrowerks:CodeWarrior∂ MPW:Interfaces&Libraries:Interfaces:MWCIncludes:"  ∂
+-i ::: -i- -i : -w off -indirect -mc68020 -model CFMflatdf ∂
+-pragma "export on" -model far -opt off -t -ext .CFM68K.o {SrcCFM68K} -o :Obj:
+
+Time to compile 'String.c': 15.80 seconds
+
+MWLink68K -xm sharedlibrary -sym on -msg nodup -@export String.exp -name String ∂
+-o String.shlb.CFM68K :Obj:String.c.CFM68K.o ∂
+"{MW68KLibraries}MathLibCFM68K Fa(4i_8d).Lib" ∂
+:::PerlStub ∂
+"{MW68KLibraries}InterfaceLib" ∂
+"{MW68KLibraries}MSL C.CFM68K Fa(4i_8d).Lib" ∂
+"{MW68KLibraries}MSL MWRuntimeLibCFM68K" ∂
+"{MW68KLibraries}MSL ShLibRuntimeCFM68K.Lib"
+
+dmake -n install_dynamic -f Makefile.mk > install.out
+
+:::InstallBLIB "Unicode::String" "perl -e 'use File::Path; mkpath(\@ARGV, 1);'" :lib:Unicode:CharName.pm 	String.pm String.xs
+
+Skipping :String.xs, which doesn't contain any pod.
+
+perl -e 'use File::Path; mkpath(\@ARGV, 1);' :blib:lib:MacPPC:auto:Unicode:String: :blib:lib:MacCFM68K:auto:Unicode:String:
+
+mkdir :blib:lib:MacPPC
+mkdir :blib:lib:MacPPC:auto
+mkdir :blib:lib:MacPPC:auto:Unicode
+mkdir :blib:lib:MacPPC:auto:Unicode:String:
+mkdir :blib:lib:MacCFM68K
+mkdir :blib:lib:MacCFM68K:auto
+mkdir :blib:lib:MacCFM68K:auto:Unicode
+mkdir :blib:lib:MacCFM68K:auto:Unicode:String:
+Duplicate -y String.shlb.PPC :blib:lib:MacPPC:auto:Unicode:String:String
+Duplicate -y String.shlb.CFM68K :blib:lib:MacCFM68K:auto:Unicode:String:String
+
+Files t
+perl -I ':blib:lib' :t:byteswap.t
+1..5
+ok 1
+ok 2
+ok 3
+ok 4
+ok 5
+
+perl -I ':blib:lib' :t:charname.t
+1..12
+ok 1
+ok 2
+ok 3
+ok 4
+ok 5
+ok 6
+ok 7
+ok 8
+ok 9
+ok 10
+ok 11
+ok 12
+
+perl -I ':blib:lib' :t:encoding.t
+1..38
+ok 1
+ok 2
+ok 3
+ok 4
+ok 5
+ok 6
+ok 7
+U+6161 U+0062 U+6363 U+0064
+Expect 2 lines of warnings...
+ok 8
+U+0061 U+6262 U+d898 U+df63 U+d800 U+dc02 U+0000
+ok 9
+ok 10
+ok 11
+ok 12
+Expect 2 lines of warnings...
+U+dbff U+dfff U+0000
+ok 13
+ok 14
+ok 15
+UTF16: U+0061 U+00e5 U+0100 U+0761 U+3800 U+6161
+UTF8x: 61c3a5c480dda1e3a080e685a1
+ok 16
+ok 17
+Surrogates...
+U+d800 U+dc00 U+dbff U+dfff
+UTF8: f0908080f48fbfbf
+ok 18
+U+d800 U+dc00 U+dbff U+dfff
+000100000010ffff
+ok 19
+Expect a warning with this incomplete surrogate pair...
+U+d800
+ok 20
+...and lots of noice from this...
+U+0061 U+0062 U+0063 U+0064 U+0065 U+0066
+ok 21
+HEX: U+0041 U+2262 U+0391 U+002e
+UTF7: A+ImIDkQ-.
+ok 22
+ok 23
+HEX: U+0048 U+0069 U+0020 U+004d U+006f U+006d U+0020 U+263a U+0021
+UTF7: Hi Mom +Jjo-!
+ok 24
+ok 25
+ok 26
+ok 27
+ok 28
+U+03e9
++A+k-
+ok 29
+U+03e9 U+03ea
++A+kD6g-
+ok 30
+U+03e9 U+03ea U+03eb
++A+kD6gPr-
+ok 31
+U+03e9 U+03ea U+03eb U+03ec
++A+kD6gPrA+w-
+ok 32
+U+03e9 U+03ea U+03eb U+03ec U+03ed
++A+kD6gPrA+wD7Q-
+ok 33
+U+03e9 U+03ea U+03eb U+03ec U+03ed U+03ee
++A+kD6gPrA+wD7QPu-
+ok 34
+ok 35
+ok 36
+U+feff U+0061 U+0062 U+0063
+ok 37
+U+feff U+0061 U+0062 U+0063
+ok 38
+
+perl -I ':blib:lib' :t:op.t
+1..21
+ok 1
+ok 2
+U+0061 U+0062 U+0063 U+0064 U+0065 U+0066
+U+0061 U+0062 U+0063 U+0064 U+0065 U+0066
+ok 3
+ok 4
+U+0061 U+0062 U+0063 U+0064 U+0065 U+0066
+U+0061 U+0062 U+0063 U+0064 U+0065 U+0066 U+0067
+abcdefgabcdefgabcdefg
+ok 5
+ok 6
+ok 7
+ok 8
+ok 9
+ok 10
+ok 11
+ok 12
+ok 13
+ok 14
+ok 15
+ok 16
+ok 17
+ok 18
+ok 19
+ok 20
+ok 21
+
+perl -I ':blib:lib' :t:ord.t
+1..10
+229
+229
+ok 1
+ok 2
+ok 3
+U+d800 U+dc00
+ok 4
+U+dbff U+dfff
+ok 5
+U+d801 U+dc01
+ok 6
+ok 7
+U+0061 U+d801 U+dc01 U+0062
+U+0061 U+10401 U+0062
+ok 8
+U+0061 U+dc01 U+d801 U+0062
+ok 9
+U+0061 U+0062
+ok 10
+
+perl -I ':blib:lib' :t:stringify.t
+1..3
+U+0067 U+006a U+00f8 U+006b
+ok 1
+U+0067 U+006a U+00f8 U+006b
+gj√∏k
+ok 2
+# Don't know how to stringify as 'xyzzy'
+File ':t:stringify.t'; Line 26
+ok 3
